@@ -23,13 +23,19 @@
             [assetsLibrary enumerateGroupsWithTypes:ALAssetsGroupAll usingBlock:^(ALAssetsGroup *group, BOOL *stop) {
                 if ([[group valueForProperty:ALAssetsGroupPropertyName] isEqualToString:customAlbumName]) {
                     [group addAsset:asset];
-                    completionBlock();
+                    if (completionBlock) {
+                        completionBlock();
+                    }
                 }
             } failureBlock:^(NSError *error) {
-                failureBlock(error);
+                if (failureBlock) {
+                    failureBlock(error);
+                }
             }];
         } failureBlock:^(NSError *error) {
-            failureBlock(error);
+            if (failureBlock) {
+                failureBlock(error);
+            }
         }];
     };
     [assetsLibrary writeImageDataToSavedPhotosAlbum:imageData metadata:nil completionBlock:^(NSURL *assetURL, NSError *error) {
@@ -38,9 +44,13 @@
                 if (group) {
                     [assetsLibrary assetForURL:assetURL resultBlock:^(ALAsset *asset) {
                         [group addAsset:asset];
-                        completionBlock();
+                        if (completionBlock) {
+                            completionBlock();
+                        }
                     } failureBlock:^(NSError *error) {
-                        failureBlock(error);
+                        if (failureBlock) {
+                            failureBlock(error);
+                        }
                     }];
                 } else {
                     AddAsset(assetsLibrary, assetURL);
@@ -49,7 +59,9 @@
                 AddAsset(assetsLibrary, assetURL);
             }];
         } else {
-            completionBlock();
+            if (completionBlock) {
+                completionBlock();
+            }
         }
     }];
 }
